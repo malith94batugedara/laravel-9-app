@@ -67,9 +67,10 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($employee_id)
     {
-        //
+        $employee=Employee::find($employee_id);
+        return view('employee.edit',compact('employee'));
     }
 
     /**
@@ -79,9 +80,18 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(EmployeeFormRequest $request, $employee_id)
     {
-        //
+        $data = $request->validated();
+
+        $employee = Employee::find($employee_id);
+
+        $employee->emp_name = $data['Employee-Name'];
+        $employee->emp_age = $data['Employee-Age'];
+
+        $employee->update();
+
+        return redirect(route('employee.index'))->with('status','Employee Updated Successfully!');
     }
 
     /**
@@ -90,8 +100,12 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($employee_id)
     {
-        //
+        $employee=Employee::find($employee_id);
+
+        $employee->delete();
+
+        return redirect(route('employee.index'))->with('status','Employee Deleted Successfully!');
     }
 }
